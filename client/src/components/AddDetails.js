@@ -33,13 +33,23 @@ export const AddDetails = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Create a new FormData object
+        const formDataToSend = new FormData();
+        formDataToSend.append('machineName', formData.machineName);
+        formDataToSend.append('description', formData.description);
+        formDataToSend.append('website', formData.website);
+        formDataToSend.append('supportMail', formData.supportMail);
+        formDataToSend.append('supportContact', formData.supportContact);
+        formDataToSend.append('establishmentYear', formData.establishmentYear);
+        formDataToSend.append('numberOfMachines', formData.numberOfMachines);
+        formDataToSend.append('machineMake', formData.machineMake);
+        formDataToSend.append('machineId', formData.machineId);
+        formDataToSend.append('machineImage', formData.machineImage);
+
         try {
-            const response = await fetch('http:/localhost:5000/add-details', {
+            const response = await fetch('http://localhost:5000/add-details', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                body: formDataToSend, // Send FormData object
             });
 
             if (!response.ok) {
@@ -50,7 +60,6 @@ export const AddDetails = () => {
             console.log('Machine details submitted successfully!');
         } catch (error) {
             console.error('Error submitting machine details:', error);
-           
         }
     };
 
@@ -109,7 +118,7 @@ export const AddDetails = () => {
                     <input type="text" className="form-control" id="machineId" name="machineId" value={formData.machineId} onChange={handleChange} placeholder="Enter machine ID" />
                 </div>
 
-                <button type="submit"  className="btn btn-primary">Submit</button>
+                <button type="submit" className="btn btn-primary">Submit</button>
             </form>
         </div>
     );

@@ -34,6 +34,7 @@ const upload = multer({
 }).single('machineImage'); // 'machineImage' should match the name attribute in your form input
 
 router.post("/add-details", (req, res) => {
+    console.log("Called function");
     upload(req, res, async function (err) {
         if (err instanceof multer.MulterError) {
             // A Multer error occurred when uploading
