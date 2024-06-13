@@ -52,14 +52,15 @@ export const AddDetails = () => {
                 body: formDataToSend, // Send FormData object
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if(response.status===201)
+            alert('Machine details submitted successfully!');
+            else
+            {
+                const data=await response.json();
+                alert(`Error: ${data.message}`);
             }
-
-            // Optionally handle success
-            console.log('Machine details submitted successfully!');
         } catch (error) {
-            console.error('Error submitting machine details:', error);
+            alert(`Error submitting machine details: ${error.message}`);
         }
     };
 

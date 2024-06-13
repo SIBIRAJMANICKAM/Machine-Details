@@ -62,6 +62,7 @@ router.post("/add-details", (req, res) => {
         try {
             const existingMachine = await machine.findOne({ machineName, establishmentYear });
             if (existingMachine) {
+                
                 return res.status(400).send("Machine with the same name and establishment year already exists");
             }
 
