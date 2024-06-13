@@ -1,20 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import '../styles/MachineDetails.css';  // Import the custom CSS file
+import { useParams } from 'react-router-dom';
 
 export const MachineDetails = () => {
-  // Mock data
-  const machine = {
-    id: '123456789',  // Example machine ID
-    name: 'Machine X',
-    description: 'High-performance machine designed for industrial use.',
-    website: 'https://machine-x.example.com',
-    supportMail: 'support@machine-x.example.com',
-    supportContact: '+1234567890',
-    establishmentYear: 2005,
-    numberOfMachines: 50,
-    machineMake: 'XYZ Corporation',  // Example machine make
-    photo: 'https://via.placeholder.com/150' // URL of the machine's photo
+  const [getMachine, setMachine] = useState([]);
+  console.log(getMachine);
+
+  const {id}=useParams();
+  console.log(id);
+
+  const getd = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/getmachine/${id}/`, {
+        method: 'GET',
+      });
+
+      const data = await response.json();
+      if (response.status === 201) {
+        setMachine(data);
+        console.log('Machine details got successfully!');
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      alert(`Error getting machine details: ${error.message}`);
+    }
   };
+
+  useEffect(() => {
+    getd();
+  }, []);
+
+
+
+  
 
   const handleUpdate = () => {
     // Handle update logic here, e.g., redirect to edit page or modal
@@ -31,17 +50,22 @@ export const MachineDetails = () => {
       <div className="content">
         <h1>Welcome Soorya</h1>
         <div className="card">
-          <img src={machine.photo} className="card-img" alt={machine.name} />
+        <img 
+               src={`http://localhost:5000/images/${(getMachine.machineImage).replace('uploads\\', '')}`}  
+                alt={getMachine.name} 
+                style={{ width: '50px', height: '50px', borderRadius:'50px' }} 
+                />
+                
           <div className="card-body">
-            <h5 className="card-title">{machine.name}</h5>
-            <p className="card-text"><strong>Description:</strong> {machine.description}</p>
-            <p className="card-text"><strong>Website:</strong> <a href={machine.website} target="_blank" rel="noopener noreferrer">{machine.website}</a></p>
-            <p className="card-text"><strong>Support Mail:</strong> {machine.supportMail}</p>
-            <p className="card-text"><strong>Support Contact:</strong> {machine.supportContact}</p>
-            <p className="card-text"><strong>Year of Establishment:</strong> {machine.establishmentYear}</p>
-            <p className="card-text"><strong>Number of Machines:</strong> {machine.numberOfMachines}</p>
-            <p className="card-text"><strong>Machine Make:</strong> {machine.machineMake}</p>
-            <p className="card-text"><strong>Machine ID:</strong> {machine.id}</p>
+            <h5 className="card-title">{getMachine.name}</h5>
+            <p className="card-text"><strong>Description:</strong> {getMachine.description}</p>
+            <p className="card-text"><strong>Website:</strong> <a href={getMachine.website} target="_blank" rel="noopener noreferrer">{getMachine.website}</a></p>
+            <p className="card-text"><strong>Support Mail:</strong> {getMachine.supportMail}</p>
+            <p className="card-text"><strong>Support Contact:</strong> {getMachine.supportContact}</p>
+            <p className="card-text"><strong>Year of Establishment:</strong> {getMachine.establishmentYear}</p>
+            <p className="card-text"><strong>Number of Machines:</strong> {getMachine.numberOfMachines}</p>
+            <p className="card-text"><strong>Machine Make:</strong> {getMachine.machineMake}</p>
+            <p className="card-text"><strong>Machine ID:</strong> {getMachine.id}</p>
           </div>
           <div className="d-flex justify-content-evenly">
             <button className="btn btn-warning" onClick={handleUpdate}>Update</button>

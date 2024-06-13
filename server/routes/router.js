@@ -88,5 +88,27 @@ router.post("/add-details", (req, res) => {
         }
     });
 });
+router.get('/getmachine/:id',async(req,res)=>{
+    try
+    {console.log(req.params);
+    const {id}=req.params;
+    const individual=await machine.findById({_id:id});
+    console.log(individual);
+    res.status(201).json(individual);}
+    catch(error){
+        req.status(404).json(error);
+    }
+})
+
+router.get('/getData',async (req,res)=>{
+    try{
+        const machineData=await machine.find();
+        res.status(201).json(machineData);
+        console.log(machineData);
+    }
+    catch{
+        res.status(404).json(error);
+    }
+})
 
 module.exports = router;
