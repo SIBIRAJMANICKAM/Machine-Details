@@ -56,7 +56,7 @@ export const MachineDetails = () => {
             <div style={{ width: '50px', height: '50px', borderRadius: '50px', backgroundColor: '#ccc' }} />
           )}
           <div className="card-body">
-            <h5 className="card-title">{getMachine.name || 'N/A'}</h5>
+            <h5 className="card-title">{getMachine.machineName || 'N/A'}</h5>
             <p className="card-text"><strong>Description:</strong> {getMachine.description || 'N/A'}</p>
             <p className="card-text"><strong>Website:</strong> <a href={getMachine.website || '#'} target="_blank" rel="noopener noreferrer">{getMachine.website || 'N/A'}</a></p>
             <p className="card-text"><strong>Support Mail:</strong> {getMachine.supportMail || 'N/A'}</p>
@@ -64,7 +64,7 @@ export const MachineDetails = () => {
             <p className="card-text"><strong>Year of Establishment:</strong> {getMachine.establishmentYear || 'N/A'}</p>
             <p className="card-text"><strong>Number of Machines:</strong> {getMachine.numberOfMachines || 'N/A'}</p>
             <p className="card-text"><strong>Machine Make:</strong> {getMachine.machineMake || 'N/A'}</p>
-            <p className="card-text"><strong>Machine ID:</strong> {getMachine.id || 'N/A'}</p>
+            <p className="card-text"><strong>Machine ID:</strong> {getMachine.machineId || 'N/A'}</p>
           </div>
           <div className="d-flex justify-content-evenly">
             <button className="btn btn-warning" onClick={handleUpdate}>Update</button>
