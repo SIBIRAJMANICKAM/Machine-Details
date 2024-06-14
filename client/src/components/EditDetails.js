@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-
+import React, { useEffect,useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 export const EditDetails = () => {
+//     const [getMachine, setMachine] = useState([]);
+//   console.log(getMachine);
+const navigate = useNavigate();
     const [formData, setFormData] = useState({
         machineName: '',
         description: '',
@@ -29,11 +32,67 @@ export const EditDetails = () => {
             machineImage: e.target.files[0],
         }));
     };
+    const { id } = useParams();
+  console.log(id);
+
+  const getd = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/getmachine/${id}/`, {
+        method: 'GET',
+      });
+
+      const data = await response.json();
+      if (response.status === 201) {
+        setFormData(data);
+        console.log('Machine details got successfully!');
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      alert(`Error fetching machine details: ${error.message}`);
+    }
+  };
+
+  useEffect(() => {
+    getd();
+  }, [id]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('machineName', formData.machineName);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('website', formData.website);
+    formDataToSend.append('supportMail', formData.supportMail);
+    formDataToSend.append('supportContact', formData.supportContact);
+    formDataToSend.append('establishmentYear', formData.establishmentYear);
+    formDataToSend.append('numberOfMachines', formData.numberOfMachines);
+    formDataToSend.append('machineMake', formData.machineMake);
+    formDataToSend.append('machineId', formData.machineId);
+    formDataToSend.append('machineImage', formData.machineImage);
+
+    try {
+        const response = await fetch(`http://localhost:5000/updateMachine/${id}`, {
+            method: 'PATCH',
+            body: formDataToSend
+        });
+
+        if (response.status === 201) {
+            alert('Machine details updated successfully!');
+            navigate("/");
+        } else {
+            const data = await response.json();
+            alert(`Error: ${data.message}`);
+        }
+    } catch (error) {
+        alert(`Error updating machine details: ${error.message}`);
+    }
+};
 
     return (
         <div className='container'>
             <NavLink to="/">Home</NavLink>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="machineName">Machine Name</label>
                     <input type="text" className="form-control" id="machineName" name="machineName" value={formData.machineName} onChange={handleChange} placeholder="Enter machine name" required />

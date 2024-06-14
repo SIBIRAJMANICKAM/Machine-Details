@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 });
 
 // Initialize multer middleware
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     limits: {
         fileSize: 1024 * 1024 * 10 // 10 MB limit (adjust as necessary)
@@ -31,7 +31,7 @@ const upload = multer({
         }
         cb(new Error('Only images are allowed'));
     }
-}).single('machineImage'); // 'machineImage' should match the name attribute in your form input
+}).single('machineImage');
 
 router.post("/add-details", (req, res) => {
     console.log("Called function");
@@ -110,5 +110,64 @@ router.get('/getData',async (req,res)=>{
         res.status(404).json(error);
     }
 })
+
+router.delete("/delete/:id", async (req, res) => {
+    try {
+        console.log("Delete Request ID:", req.params.id);  
+        const { id } = req.params;
+        const deleteuser = await machine.findByIdAndDelete({ _id: id });
+        console.log(deleteuser);
+        res.status(201).json(deleteuser);
+    } catch (error) {
+        res.status(422).json(error);
+    }
+});
+
+router.patch('/updateMachine/:id', (req, res) => {
+    upload(req, res, async (err) => {
+        if (err instanceof multer.MulterError) {
+            // Handle Multer errors
+            console.error('Multer error:', err);
+            return res.status(500).send('Error uploading file');
+        } else if (err) {
+            // Handle other errors
+            console.error('Unknown error:', err);
+            return res.status(500).send('Unknown error occurred');
+        }
+
+        try {
+            const { id } = req.params;
+            const updateFields = {
+                machineName: req.body.machineName,
+                description: req.body.description,
+                website: req.body.website,
+                supportMail: req.body.supportMail,
+                supportContact: req.body.supportContact,
+                establishmentYear: req.body.establishmentYear,
+                numberOfMachines: req.body.numberOfMachines,
+                machineMake: req.body.machineMake,
+                machineId: req.body.machineId
+            };
+
+            if (req.file) {
+                updateFields.machineImage = req.file.path;
+            }
+
+            const updatedMachine = await machine.findByIdAndUpdate(id, updateFields, {
+                new: true // To return updated document
+            });
+
+            if (!updatedMachine) {
+                return res.status(404).send('Machine not found');
+            }
+
+            res.status(201).json(updatedMachine);
+        } catch (error) {
+            console.error('Error updating machine:', error);
+            res.status(422).json({ message: 'Failed to update machine' });
+        }
+    });
+});
+
 
 module.exports = router;

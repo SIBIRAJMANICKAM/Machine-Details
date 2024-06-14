@@ -25,7 +25,33 @@ export const AdminDashboard = () => {
   useEffect(() => {
     getd();
   }, []);
+  const deleteuser = async (id) => {
+    try {
+        const res2 = await fetch(`http://localhost:5000/delete/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json"
+            }
+        });
 
+        if (res2.status === 422) {
+            console.log("Error");
+            return;
+        }
+
+        const deletedata = await res2.json();
+        console.log(deletedata);
+
+        if (res2.status === 201) {
+            console.log("User Deleted");
+            getd();
+        } else {
+            console.log("Error", deletedata);
+        }
+    } catch (error) {
+        console.log("Error", error);
+    }
+};
   return (
     <div className="mt-5">
       <div className="container">
@@ -54,7 +80,7 @@ export const AdminDashboard = () => {
                 <td className="d-flex justify-content-evenly">
                   <NavLink to={`view/${element._id}`}><button className="btn btn-success">view</button></NavLink>
                   <NavLink to={`edit/${element._id}`}><button className="btn btn-warning">update</button></NavLink>
-                  <button className="btn btn-danger">delete</button>
+                  <button onClick={()=>{deleteuser(element._id)}} className="btn btn-danger">delete</button>
                 </td>
               </tr>
             ))}

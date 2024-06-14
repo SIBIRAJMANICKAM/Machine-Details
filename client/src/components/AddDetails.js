@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 export const AddDetails = () => {
+    const navigate=useNavigate();
     const [formData, setFormData] = useState({
         machineName: '',
         description: '',
@@ -32,8 +33,7 @@ export const AddDetails = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Create a new FormData object
+    
         const formDataToSend = new FormData();
         formDataToSend.append('machineName', formData.machineName);
         formDataToSend.append('description', formData.description);
@@ -45,22 +45,22 @@ export const AddDetails = () => {
         formDataToSend.append('machineMake', formData.machineMake);
         formDataToSend.append('machineId', formData.machineId);
         formDataToSend.append('machineImage', formData.machineImage);
-
+    
         try {
-            const response = await fetch('http://localhost:5000/add-details', {
+            const response = await fetch(`http://localhost:5000/add-details`, {
                 method: 'POST',
-                body: formDataToSend, // Send FormData object
+                body: formDataToSend
             });
-
-            if(response.status===201)
-            alert('Machine details submitted successfully!');
-            else
-            {
-                const data=await response.json();
+    
+            if (response.status === 201) {
+                alert('Machine details added successfully!');
+                navigate("/");
+            } else {
+                const data = await response.json();
                 alert(`Error: ${data.message}`);
             }
         } catch (error) {
-            alert(`Error submitting machine details: ${error.message}`);
+            alert(`Error adding machine details: ${error.message}`);
         }
     };
 
