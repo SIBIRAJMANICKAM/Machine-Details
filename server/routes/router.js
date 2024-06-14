@@ -169,5 +169,17 @@ router.patch('/updateMachine/:id', (req, res) => {
     });
 });
 
+router.get('/search', async (req, res) => {
+    const { query } = req.query;
+    try {
+        // Perform a case-insensitive search using regex
+        const searchResults = await machine.find({
+            machineName: { $regex: query, $options: 'i' }
+        });
+        res.status(200).json(searchResults);
+    } catch (error) {
+        res.status(500).json({ message: 'Error searching for machines', error });
+    }
+});
 
 module.exports = router;
