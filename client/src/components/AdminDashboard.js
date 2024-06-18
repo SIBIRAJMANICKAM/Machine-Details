@@ -62,7 +62,7 @@ export const AdminDashboard = () => {
       console.log(deletedata);
 
       if (res2.status === 201) {
-        console.log("User Deleted");
+        alert("User Deleted");
         getd();
       } else {
         console.log("Error", deletedata);

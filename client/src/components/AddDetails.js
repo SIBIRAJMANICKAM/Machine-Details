@@ -66,7 +66,7 @@ export const AddDetails = () => {
 
     return (
         <div className='container'>
-            <NavLink to="/">Home</NavLink>
+            
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="machineName">Machine Name</label>

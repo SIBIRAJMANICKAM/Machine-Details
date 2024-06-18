@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import '../styles/MachineDetails.css';  // Import the custom CSS file
-import { useParams } from 'react-router-dom';
+import { useParams,NavLink, useNavigate } from 'react-router-dom';
 
 export const MachineDetails = () => {
   const [getMachine, setMachine] = useState({});
   console.log(getMachine);
-
+  const navigate=useNavigate();
   const { id } = useParams();
   console.log(id);
+
+  
 
   const getd = async () => {
     try {
@@ -31,20 +33,39 @@ export const MachineDetails = () => {
     getd();
   }, [id]);
 
-  const handleUpdate = () => {
-    // Handle update logic here, e.g., redirect to edit page or modal
-    console.log('Update button clicked');
-  };
 
-  const handleDelete = () => {
-    // Handle delete logic here, e.g., show confirmation dialog
-    console.log('Delete button clicked');
+  const deleteuser = async (id) => {
+    try {
+      const res2 = await fetch(`http://localhost:5000/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json"
+        }
+      });
+
+      if (res2.status === 422) {
+        console.log("Error");
+        return;
+      }
+      
+      const deletedata = await res2.json();
+      console.log(deletedata);
+
+      if (res2.status === 201) {
+        alert("User Deleted");
+        navigate('/');
+      } else {
+        console.log("Error", deletedata);
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
   };
 
   return (
     <div className="container">
       <div className="content">
-        <h1>Welcome Soorya</h1>
+        
         <div className="card">
           {getMachine.machineImage ? (
             <img
@@ -67,8 +88,9 @@ export const MachineDetails = () => {
             <p className="card-text"><strong>Machine ID:</strong> {getMachine.machineId || 'N/A'}</p>
           </div>
           <div className="d-flex justify-content-evenly">
-            <button className="btn btn-warning" onClick={handleUpdate}>Update</button>
-            <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+          <NavLink to={`/edit/${getMachine._id}`}><button className="btn btn-warning">Update</button></NavLink>
+
+          <button onClick={() => { deleteuser(getMachine._id) }} className="btn btn-danger" >Delete</button>
           </div>
         </div>
       </div>
